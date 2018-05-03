@@ -19,6 +19,8 @@
     - 每个单词的平均长度 avg_word_len
     - 长单词数long_word (这里选定长度≥7的为长单词)
     - 停用词个数stopwords_count
+    - 大于4的单词的个数 long_4word
+    - 使用不重复单词的数量 unique_word
 
  2. 标点相关：Occurrence Features
     - 感叹号出现的数目exc_count
