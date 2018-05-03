@@ -50,6 +50,10 @@ def get_feature(data):
     train_features['avg_word_len'] = data['character_count'].values / train_features['word_count'].values
     # 长单词数
     train_features['long_word'] = data['words'].apply(lambda x: sum([len(word) >= 7 for word in x]))
+    # 大与4个字符的单词数
+    train_features['long_4word'] = data['words'].apply(lambda x: sum([len(word) > 4 for word in x]))
+    # 不同单词数
+    train_features['unique_word'] = data['words'].apply(lambda x: len(set(x)))
     # 停用词个数
     stop_words = stopwords.words('english')
     train_features['stopwords_count'] = data['words'].apply(lambda x: len([word for word in x if word in stop_words]))
@@ -61,8 +65,8 @@ def get_feature(data):
     train_features['comma_count'] = data['essay'].apply(lambda x: x.count(','))
 
     # # 拼写错误的单词数
-    train_features['spelling_errors'] = data['words'].apply(
-        lambda x: sum([Word(word).spellcheck()[0][0] != word for word in x]))
+    # train_features['spelling_errors'] = data['words'].apply(
+    #     lambda x: sum([Word(word).spellcheck()[0][0] != word for word in x]))
 
     # 求不重复的ngram数量：这可以表明作者用词、短语的丰富程度
     train_features['unigrams_count'] = data['words'].apply(lambda x: len(set([grams for grams in ngrams(x, 1)])))
@@ -77,15 +81,15 @@ def get_feature(data):
     train_features['fw_count'] = data['tags'].apply(lambda x: len([tag for tag in x if tag[1].startswith("FW")]))
 
     # 分析文中每句话的语气: positive，negative or neutrual
-    sid = SentimentIntensityAnalyzer()
-    data['sents_polar'] = data['sents'].apply(lambda x: [sid.polarity_scores(sent) for sent in x])
-
-    train_features['neg_sentiment'] = data['sents_polar'].apply(
-        lambda x: sum([p for item in x for polar, p in item.items() if polar == "neg"]))
-    train_features['neu_sentiment'] = data['sents_polar'].apply(
-        lambda x: sum([p for item in x for polar, p in item.items() if polar == "neu"]))
-    train_features['pos_sentiment'] = data['sents_polar'].apply(
-        lambda x: sum([p for item in x for polar, p in item.items() if polar == "pos"]))
+    # sid = SentimentIntensityAnalyzer()
+    # data['sents_polar'] = data['sents'].apply(lambda x: [sid.polarity_scores(sent) for sent in x])
+    #
+    # train_features['neg_sentiment'] = data['sents_polar'].apply(
+    #     lambda x: sum([p for item in x for polar, p in item.items() if polar == "neg"]))
+    # train_features['neu_sentiment'] = data['sents_polar'].apply(
+    #     lambda x: sum([p for item in x for polar, p in item.items() if polar == "neu"]))
+    # train_features['pos_sentiment'] = data['sents_polar'].apply(
+    #     lambda x: sum([p for item in x for polar, p in item.items() if polar == "pos"]))
     print('---train_features end...')
     return train_features
 
